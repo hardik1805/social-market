@@ -9,9 +9,7 @@
 const header = document.getElementById('header');
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navLinks = document.getElementById('navLinks');
-const pricingToggle = document.getElementById('pricingToggle');
-const contactForm = document.getElementById('contactForm');
-const newsletterForm = document.getElementById('newsletterForm');
+const leadForm = document.getElementById('leadForm');
 
 // ========================================
 // Sticky Header with Shadow
@@ -47,20 +45,22 @@ navLinks.querySelectorAll('a').forEach(link => {
 });
 
 // ========================================
-// Smooth Scroll Navigation
+// Smooth Scroll Navigation with Offset
 // ========================================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
-        
+
         if (targetId === '#') return;
-        
+
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
             const headerHeight = header.offsetHeight;
-            const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight;
-            
+            // No extra offset - section aligns with header bottom
+            const extraOffset = 0;
+            const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight - extraOffset;
+
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -70,108 +70,41 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ========================================
-// Pricing Toggle (Monthly/Yearly)
+// FAQ Accordion with Smooth Animation
 // ========================================
-let isYearly = false;
+const faqItems = document.querySelectorAll('.faq-item');
 
-function togglePricing() {
-    isYearly = !isYearly;
-    pricingToggle.classList.toggle('active', isYearly);
-    
-    // Update toggle labels
-    document.querySelectorAll('.toggle-label').forEach(label => {
-        label.classList.toggle('active', 
-            (label.dataset.period === 'yearly' && isYearly) || 
-            (label.dataset.period === 'monthly' && !isYearly)
-        );
-    });
-    
-    // Update prices
-    document.querySelectorAll('.price').forEach(priceEl => {
-        const monthly = priceEl.dataset.monthly;
-        const yearly = priceEl.dataset.yearly;
-        priceEl.textContent = isYearly ? yearly : monthly;
-    });
-}
+faqItems.forEach(item => {
+    const question = item.querySelector('.faq-question');
+    const answer = item.querySelector('.faq-answer');
+    const icon = item.querySelector('.faq-icon');
 
-pricingToggle.addEventListener('click', togglePricing);
+    question.addEventListener('click', () => {
+        const isOpen = item.classList.contains('faq-open');
 
-// Also allow clicking on labels
-document.querySelectorAll('.toggle-label').forEach(label => {
-    label.addEventListener('click', () => {
-        if ((label.dataset.period === 'yearly' && !isYearly) || 
-            (label.dataset.period === 'monthly' && isYearly)) {
-            togglePricing();
+        // Close all other items with animation
+        faqItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                otherItem.classList.remove('faq-open');
+                const otherAnswer = otherItem.querySelector('.faq-answer');
+                otherAnswer.style.maxHeight = null;
+                otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Toggle current item with smooth height animation
+        if (!isOpen) {
+            item.classList.add('faq-open');
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            question.setAttribute('aria-expanded', 'true');
+        } else {
+            item.classList.remove('faq-open');
+            answer.style.maxHeight = null;
+            question.setAttribute('aria-expanded', 'false');
         }
     });
 });
 
-// ========================================
-// Statistics Counter Animation
-// ========================================
-function animateCounter(element, target, duration = 2000) {
-    const start = 0;
-    const startTime = performance.now();
-    const isFloat = target % 1 !== 0;
-    
-    function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function (ease-out)
-        const easeOut = 1 - Math.pow(1 - progress, 3);
-        const current = start + (target - start) * easeOut;
-        
-        element.textContent = isFloat ? current.toFixed(1) : Math.floor(current).toLocaleString();
-        
-        if (progress < 1) {
-            requestAnimationFrame(update);
-        }
-    }
-    
-    requestAnimationFrame(update);
-}
-
-// Intersection Observer for stats
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statNumbers = entry.target.querySelectorAll('.stat-number');
-            statNumbers.forEach(stat => {
-                const target = parseFloat(stat.dataset.target);
-                animateCounter(stat, target);
-            });
-            statsObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.5 });
-
-const statsBanner = document.querySelector('.stats-banner');
-if (statsBanner) {
-    statsObserver.observe(statsBanner);
-}
-
-// ========================================
-// Scroll Reveal Animations
-// ========================================
-const revealElements = document.querySelectorAll(
-    '.feature-card, .step, .testimonial-card, .pricing-card, .about-list li, .info-card'
-);
-
-revealElements.forEach(el => el.classList.add('reveal'));
-
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => {
-                entry.target.classList.add('active');
-            }, index * 100);
-            revealObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-revealElements.forEach(el => revealObserver.observe(el));
 
 // ========================================
 // Form Validation
@@ -181,114 +114,146 @@ function validateEmail(email) {
     return re.test(email);
 }
 
+function validatePhone(phone) {
+    // Basic phone validation - at least 10 digits
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length >= 10;
+}
+
 function showError(input, message) {
     const formGroup = input.closest('.form-group');
     formGroup.classList.add('error');
-    formGroup.querySelector('.error-message').textContent = message;
+    const errorElement = formGroup.querySelector('.error-message');
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
 }
 
 function clearError(input) {
     const formGroup = input.closest('.form-group');
     formGroup.classList.remove('error');
+    const errorElement = formGroup.querySelector('.error-message');
+    if (errorElement) {
+        errorElement.textContent = '';
+    }
 }
 
-function validateForm(form) {
-    let isValid = true;
-    
-    const name = form.querySelector('#name');
-    const email = form.querySelector('#email');
-    const message = form.querySelector('#message');
-    
-    // Clear previous errors
-    [name, email, message].forEach(clearError);
-    
-    // Validate name
-    if (name.value.trim().length < 2) {
-        showError(name, 'Please enter your name');
-        isValid = false;
-    }
-    
-    // Validate email
-    if (!validateEmail(email.value)) {
-        showError(email, 'Please enter a valid email address');
-        isValid = false;
-    }
-    
-    // Validate message
-    if (message.value.trim().length < 10) {
-        showError(message, 'Please enter a message (at least 10 characters)');
-        isValid = false;
-    }
-    
-    return isValid;
+function clearAllErrors(form) {
+    form.querySelectorAll('.form-group').forEach(group => {
+        group.classList.remove('error');
+        const errorElement = group.querySelector('.error-message');
+        if (errorElement) {
+            errorElement.textContent = '';
+        }
+    });
 }
 
-// Contact form submission
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    if (validateForm(this)) {
-        // Show success message
-        const button = this.querySelector('button[type="submit"]');
-        const originalText = button.textContent;
-        
-        button.textContent = 'Message Sent! ✓';
-        button.style.background = '#6BCB77';
-        button.disabled = true;
-        
-        // Reset form
-        setTimeout(() => {
-            this.reset();
-            button.textContent = originalText;
-            button.style.background = '';
-            button.disabled = false;
-        }, 3000);
-    }
-});
+// ========================================
+// Lead Form Submission
+// ========================================
+if (leadForm) {
+    leadForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-// Real-time validation
-contactForm.querySelectorAll('input, textarea').forEach(input => {
-    input.addEventListener('blur', function() {
-        if (this.id === 'email' && this.value && !validateEmail(this.value)) {
-            showError(this, 'Please enter a valid email address');
-        } else if (this.value) {
-            clearError(this);
+        const name = this.querySelector('#leadName');
+        const phone = this.querySelector('#leadPhone');
+        const email = this.querySelector('#leadEmail');
+        const brief = this.querySelector('#leadBrief');
+
+        let isValid = true;
+
+        // Clear previous errors
+        clearAllErrors(this);
+
+        // Validate name
+        if (name.value.trim().length < 2) {
+            showError(name, 'Please enter your full name');
+            isValid = false;
+        }
+
+        // Validate phone
+        if (!validatePhone(phone.value)) {
+            showError(phone, 'Please enter a valid phone number');
+            isValid = false;
+        }
+
+        // Validate email
+        if (!validateEmail(email.value)) {
+            showError(email, 'Please enter a valid email address');
+            isValid = false;
+        }
+
+        // Validate brief
+        if (brief.value.trim().length < 20) {
+            showError(brief, 'Please provide more details about your business (at least 20 characters)');
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Show success message
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.textContent;
+
+            button.textContent = 'Request Sent! ✓';
+            button.style.background = '#6BCB77';
+            button.disabled = true;
+
+            // Reset form after delay
+            setTimeout(() => {
+                this.reset();
+                button.textContent = originalText;
+                button.style.background = '';
+                button.disabled = false;
+            }, 4000);
         }
     });
-    
-    input.addEventListener('input', function() {
-        if (this.closest('.form-group').classList.contains('error')) {
-            clearError(this);
-        }
+
+    // Real-time validation on blur
+    leadForm.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('blur', function () {
+            if (this.id === 'leadEmail' && this.value && !validateEmail(this.value)) {
+                showError(this, 'Please enter a valid email address');
+            } else if (this.id === 'leadPhone' && this.value && !validatePhone(this.value)) {
+                showError(this, 'Please enter a valid phone number');
+            } else if (this.value) {
+                clearError(this);
+            }
+        });
+
+        input.addEventListener('input', function () {
+            if (this.closest('.form-group').classList.contains('error')) {
+                clearError(this);
+            }
+        });
     });
-});
+}
 
 // ========================================
-// Newsletter Form
+// Scroll Reveal Animations
 // ========================================
-newsletterForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const email = this.querySelector('input[type="email"]');
-    const button = this.querySelector('button');
-    
-    if (validateEmail(email.value)) {
-        const originalText = button.textContent;
-        button.textContent = 'Subscribed! ✓';
-        button.style.background = '#6BCB77';
-        
-        setTimeout(() => {
-            email.value = '';
-            button.textContent = originalText;
-            button.style.background = '';
-        }, 3000);
-    }
-});
+const revealElements = document.querySelectorAll(
+    '.service-card, .process-step, .testimonial-card, .pricing-card, .pricing-overview-card, .quality-list li, .faq-item'
+);
+
+revealElements.forEach(el => el.classList.add('reveal'));
+
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => {
+                entry.target.classList.add('active');
+            }, index * 80);
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+revealElements.forEach(el => revealObserver.observe(el));
 
 // ========================================
 // Keyboard Navigation
 // ========================================
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // Close mobile menu with Escape
     if (e.key === 'Escape' && navLinks.classList.contains('active')) {
         toggleMobileMenu();
@@ -298,10 +263,10 @@ document.addEventListener('keydown', function(e) {
 // ========================================
 // Initialize
 // ========================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Check initial scroll position
     handleScroll();
-    
+
     // Add loading animation complete class
     document.body.classList.add('loaded');
 });
