@@ -1,0 +1,275 @@
+{
+  "agent_name": "CabMind Demo Booking Agent",
+  "language": "en-GB",
+  "voice_id": "11labs-Cimo",
+  "interruption_sensitivity": 0.7,
+  "reminder_trigger_ms": 20000,
+  "reminder_max_count": 1,
+  "max_call_duration_ms": 420000,
+  "end_call_after_silence_ms": 60000,
+  "stt_mode": "accurate",
+  "custom_stt_config": {
+    "provider": "deepgram",
+    "endpointing_ms": 650
+  },
+  "response_engine": {
+    "type": "conversation-flow",
+    "version": 0,
+    "conversation_flow": {
+      "global_prompt": "You are a fast, friendly taxi booking agent. Ask short questions, confirm addresses, and complete bookings quickly.",
+      "nodes": [
+
+        {
+          "id": "start",
+          "type": "conversation",
+          "instruction": {
+            "type": "static_text",
+            "text": "Hello! How can I help you today?"
+          },
+          "edges": [
+            { "destination_node_id": "intent_detect" }
+          ]
+        },
+
+        {
+          "id": "intent_detect",
+          "type": "extract_dynamic_variables",
+          "variables": [
+            {
+              "name": "intent",
+              "type": "enum",
+              "choices": ["CREATE", "OTHER"]
+            }
+          ],
+          "edges": [
+            {
+              "destination_node_id": "ask_pickup",
+              "transition_condition": {
+                "type": "equation",
+                "equations": [
+                  {
+                    "left": "{{intent}}",
+                    "operator": "==",
+                    "right": "CREATE"
+                  }
+                ]
+              }
+            }
+          ],
+          "else_edge": {
+            "destination_node_id": "contact_admin"
+          }
+        },
+
+        {
+          "id": "ask_pickup",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "What's the pickup address?"
+          },
+          "edges": [
+            { "destination_node_id": "search_pickup" }
+          ]
+        },
+
+        {
+          "id": "search_pickup",
+          "type": "function",
+          "tool_id": "tool-search-place",
+          "wait_for_result": true,
+          "edges": [
+            { "destination_node_id": "confirm_pickup" }
+          ]
+        },
+
+        {
+          "id": "confirm_pickup",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "Pickup is {{pickup_address}}. Is that correct?"
+          },
+          "edges": [
+            {
+              "destination_node_id": "ask_dropoff",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User confirms"
+              }
+            },
+            {
+              "destination_node_id": "ask_pickup",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User rejects"
+              }
+            }
+          ]
+        },
+
+        {
+          "id": "ask_dropoff",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "Where are you going?"
+          },
+          "edges": [
+            { "destination_node_id": "search_dropoff" }
+          ]
+        },
+
+        {
+          "id": "search_dropoff",
+          "type": "function",
+          "tool_id": "tool-search-place",
+          "wait_for_result": true,
+          "edges": [
+            { "destination_node_id": "confirm_dropoff" }
+          ]
+        },
+
+        {
+          "id": "confirm_dropoff",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "Dropoff is {{dropoff_address}}. Correct?"
+          },
+          "edges": [
+            {
+              "destination_node_id": "ask_time",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User confirms"
+              }
+            },
+            {
+              "destination_node_id": "ask_dropoff",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User rejects"
+              }
+            }
+          ]
+        },
+
+        {
+          "id": "ask_time",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "When do you need the taxi?"
+          },
+          "edges": [
+            { "destination_node_id": "ask_passengers" }
+          ]
+        },
+
+        {
+          "id": "ask_passengers",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "How many passengers?"
+          },
+          "edges": [
+            { "destination_node_id": "get_price" }
+          ]
+        },
+
+        {
+          "id": "get_price",
+          "type": "function",
+          "tool_id": "tool-get-price-quote",
+          "wait_for_result": true,
+          "edges": [
+            { "destination_node_id": "confirm_price" }
+          ]
+        },
+
+        {
+          "id": "confirm_price",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "The fare is {{currency_symbol}}{{fare}}. Shall I book it?"
+          },
+          "edges": [
+            {
+              "destination_node_id": "ask_name",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User confirms"
+              }
+            },
+            {
+              "destination_node_id": "end",
+              "transition_condition": {
+                "type": "prompt",
+                "prompt": "User declines"
+              }
+            }
+          ]
+        },
+
+        {
+          "id": "ask_name",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "Passenger name please?"
+          },
+          "edges": [
+            { "destination_node_id": "create_booking" }
+          ]
+        },
+
+        {
+          "id": "create_booking",
+          "type": "function",
+          "tool_id": "tool-create-booking",
+          "wait_for_result": true,
+          "edges": [
+            { "destination_node_id": "read_reference" }
+          ]
+        },
+
+        {
+          "id": "read_reference",
+          "type": "conversation",
+          "instruction": {
+            "type": "prompt",
+            "text": "Your booking is confirmed. Reference {{booking_id}}. Confirmation text will arrive shortly."
+          },
+          "edges": [
+            { "destination_node_id": "end" }
+          ]
+        },
+
+        {
+          "id": "contact_admin",
+          "type": "conversation",
+          "instruction": {
+            "type": "static_text",
+            "text": "Let me connect you to our operator for assistance."
+          },
+          "edges": [
+            { "destination_node_id": "end" }
+          ]
+        },
+
+        {
+          "id": "end",
+          "type": "end",
+          "instruction": {
+            "type": "static_text",
+            "text": "Thank you for calling. Goodbye."
+          }
+        }
+
+      ]
+    }
+  }
+}

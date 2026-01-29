@@ -4,6 +4,14 @@
  */
 
 // ========================================
+// Fix scroll position on page refresh
+// ========================================
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+// ========================================
 // DOM Elements
 // ========================================
 const header = document.getElementById('header');
@@ -269,6 +277,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add loading animation complete class
     document.body.classList.add('loaded');
+
+    // Custom file upload handling
+    const fileInput = document.getElementById('leadImage');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileName = document.getElementById('fileName');
+
+    if (fileInput && fileUploadArea && fileName) {
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                fileName.textContent = '✓ ' + this.files[0].name;
+            } else {
+                fileName.textContent = '';
+            }
+        });
+
+        // Drag and drop visual feedback
+        fileUploadArea.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function () {
+            this.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', function () {
+            this.classList.remove('dragover');
+        });
+    }
 });
 
 // ========================================
