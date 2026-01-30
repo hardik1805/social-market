@@ -1535,15 +1535,15 @@ h6 {
 ======================================== */
 .how-it-works {
     padding: var(--section-padding) 0;
-    background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%);
+    background: linear-gradient(180deg, var(--cream-bg) 0%, var(--off-white) 100%);
 }
 
 .how-it-works .section-title {
-    color: var(--white);
+    color: var(--navy-dark);
 }
 
 .how-it-works .section-subtitle {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--gray-muted);
 }
 
 .how-it-works .highlight {
@@ -1608,7 +1608,7 @@ h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #10b981;
+    background: var(--orange-vibrant);
     color: var(--white);
     border-radius: 50%;
     flex-shrink: 0;
@@ -1622,7 +1622,7 @@ h6 {
 }
 
 .accordion-item.active .accordion-toggle {
-    background: #ef4444;
+    background: var(--orange-deep);
 }
 
 .accordion-item.active .accordion-toggle svg {
