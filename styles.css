@@ -1010,50 +1010,7 @@ h6 {
     margin-top: 2px;
 }
 
-.platform-design-2 strong {
-    display: inline;
-    margin-bottom: 0;
-    font-size: 13px;
-}
-
-/* Design 1: Pill Badges (Bronze Plan) */
-.platform-design-1 {
-    margin-left: 0;
-}
-
-.platform-design-1 strong {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 13px;
-}
-
-.platform-pill-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.platform-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    background: linear-gradient(135deg, #FFF5EB 0%, #FFE8D6 100%);
-    border: 1px solid var(--peach-accent);
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--navy-dark);
-    transition: all var(--transition-fast);
-}
-
-.platform-pill:hover {
-    background: linear-gradient(135deg, #FFE8D6 0%, #FFDDC4 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(205, 127, 50, 0.2);
-}
-
-/* Design 2: Icon Circles (Silver Plan) */
+/* Design 2: Icon Circles (used for all pricing plans) */
 .platform-design-2 {
     margin-left: 0;
 }
@@ -1115,101 +1072,8 @@ h6 {
     transform: translateX(-50%) translateY(-4px);
 }
 
-/* Design 3: Gradient Banner (Gold Plan) */
-.platform-design-3 {
-    margin-left: 0;
-    width: 100%;
-}
-
-.platform-banner {
-    background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 50%, #FFE082 100%);
-    border: 2px solid #F9A825;
-    border-radius: 12px;
-    padding: 12px 14px;
-    position: relative;
-    overflow: hidden;
-}
-
-.platform-banner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
-    animation: shimmer 3s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-
-    0%,
-    100% {
-        transform: translateX(-100%);
-    }
-
-    50% {
-        transform: translateX(100%);
-    }
-}
-
-.platform-banner-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    position: relative;
-    z-index: 1;
-}
-
-.platform-banner-header strong {
-    font-size: 13px;
-    color: #5D4037;
-}
-
-.platform-badge-gold {
-    padding: 3px 10px;
-    background: linear-gradient(135deg, #D4AF37 0%, #F4D04C 100%);
-    color: #5D4037;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
-}
-
-.platform-list-compact {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    position: relative;
-    z-index: 1;
-}
-
-.platform-list-compact span {
-    font-size: 11px;
-    font-weight: 500;
-    color: #6D4C41;
-}
-
-.platform-list-compact .separator {
-    color: #BCAAA4;
-    font-size: 10px;
-}
-
 /* Responsive adjustments for platform designs */
 @media (max-width: 600px) {
-    .platform-pill-row {
-        gap: 4px;
-    }
-
-    .platform-pill {
-        font-size: 10px;
-        padding: 3px 8px;
-    }
-
     .platform-icons-row {
         gap: 6px;
     }
@@ -1222,10 +1086,6 @@ h6 {
     .platform-icon-circle svg {
         width: 14px;
         height: 14px;
-    }
-
-    .platform-list-compact span {
-        font-size: 10px;
     }
 }
 
