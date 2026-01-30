@@ -993,6 +993,242 @@ h6 {
     z-index: 1;
 }
 
+/* ========================================
+   Platform Feature Design Variations
+======================================== */
+
+/* Common platform feature styles */
+.platform-feature {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start !important;
+    gap: 8px;
+}
+
+.platform-feature .feature-check {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.platform-design-2 strong {
+    display: inline;
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+/* Design 1: Pill Badges (Bronze Plan) */
+.platform-design-1 {
+    margin-left: 0;
+}
+
+.platform-design-1 strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.platform-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.platform-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, #FFF5EB 0%, #FFE8D6 100%);
+    border: 1px solid var(--peach-accent);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--navy-dark);
+    transition: all var(--transition-fast);
+}
+
+.platform-pill:hover {
+    background: linear-gradient(135deg, #FFE8D6 0%, #FFDDC4 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(205, 127, 50, 0.2);
+}
+
+/* Design 2: Icon Circles (Silver Plan) */
+.platform-design-2 {
+    margin-left: 0;
+}
+
+.platform-design-2 strong {
+    display: inline;
+    font-size: 13px;
+}
+
+.platform-icons-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.platform-icon-circle {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+    border: 2px solid #DEE2E6;
+    border-radius: 50%;
+    color: #495057;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.platform-icon-circle:hover {
+    background: linear-gradient(135deg, #6B7D8E 0%, #9AACBE 100%);
+    border-color: #6B7D8E;
+    color: white;
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(107, 125, 142, 0.35);
+}
+
+.platform-icon-circle::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 6px 12px;
+    background: var(--navy-dark);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.platform-icon-circle:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* Design 3: Gradient Banner (Gold Plan) */
+.platform-design-3 {
+    margin-left: 0;
+    width: 100%;
+}
+
+.platform-banner {
+    background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 50%, #FFE082 100%);
+    border: 2px solid #F9A825;
+    border-radius: 12px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.platform-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+    0%,
+    100% {
+        transform: translateX(-100%);
+    }
+
+    50% {
+        transform: translateX(100%);
+    }
+}
+
+.platform-banner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.platform-banner-header strong {
+    font-size: 13px;
+    color: #5D4037;
+}
+
+.platform-badge-gold {
+    padding: 3px 10px;
+    background: linear-gradient(135deg, #D4AF37 0%, #F4D04C 100%);
+    color: #5D4037;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
+.platform-list-compact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+.platform-list-compact span {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6D4C41;
+}
+
+.platform-list-compact .separator {
+    color: #BCAAA4;
+    font-size: 10px;
+}
+
+/* Responsive adjustments for platform designs */
+@media (max-width: 600px) {
+    .platform-pill-row {
+        gap: 4px;
+    }
+
+    .platform-pill {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .platform-icons-row {
+        gap: 6px;
+    }
+
+    .platform-icon-circle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .platform-icon-circle svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .platform-list-compact span {
+        font-size: 10px;
+    }
+}
+
 @media (max-width: 900px) {
     .pricing-overview-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1295,99 +1531,223 @@ h6 {
 }
 
 /* ========================================
-   How It Works Section
+   How It Works Section - Accordion Style
 ======================================== */
 .how-it-works {
     padding: var(--section-padding) 0;
-    background: var(--off-white);
+    background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%);
 }
 
-/* Vertical Process Steps (New 7-step design) */
-.process-steps-vertical {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
+.how-it-works .section-title {
+    color: var(--white);
 }
 
-.process-steps-vertical::before {
-    content: '';
-    position: absolute;
-    left: 35px;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--peach-accent);
+.how-it-works .section-subtitle {
+    color: rgba(255, 255, 255, 0.8);
 }
 
-.process-step-v {
+.how-it-works .highlight {
+    color: var(--orange-vibrant);
+}
+
+.how-it-works-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Accordion Styles */
+.accordion-wrapper {
     display: flex;
-    gap: 24px;
-    padding: 24px 0;
-    position: relative;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.process-step-v .step-icon {
-    width: 70px;
-    height: 70px;
+.accordion-item {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all var(--transition-medium);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.accordion-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-header {
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 28px;
+    padding: 20px 24px;
     background: var(--white);
-    border: 3px solid var(--peach-accent);
-    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    gap: 16px;
+}
+
+.accordion-icon-emoji {
+    font-size: 24px;
     flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-    transition: all var(--transition-medium);
 }
 
-.process-step-v:hover .step-icon {
-    background: var(--gradient-orange);
-    border-color: var(--orange-vibrant);
-    transform: scale(1.1);
-    box-shadow: var(--shadow-orange);
-}
-
-.process-step-v .step-content {
+.accordion-title {
     flex: 1;
-    padding-top: 12px;
-}
-
-.process-step-v .step-content h3 {
-    font-size: 20px;
+    text-align: left;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 8px;
     color: var(--navy-dark);
 }
 
-.process-step-v .step-content p {
+.accordion-toggle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #10b981;
+    color: var(--white);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+
+.accordion-toggle svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--transition-fast);
+}
+
+.accordion-item.active .accordion-toggle {
+    background: #ef4444;
+}
+
+.accordion-item.active .accordion-toggle svg {
+    transform: rotate(45deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.accordion-content p {
+    padding: 0 24px 20px;
     font-size: 15px;
     color: var(--gray-muted);
     line-height: 1.7;
+    margin: 0;
 }
 
-@media (max-width: 768px) {
-    .process-steps-vertical::before {
-        left: 25px;
+.accordion-item.active .accordion-content {
+    max-height: 300px;
+}
+
+/* How It Works Image */
+.how-it-works-image {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.how-it-works-image img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.floating-badge {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: var(--white);
+    padding: 12px 20px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    animation: float 3s ease-in-out infinite;
+}
+
+.badge-icon {
+    font-size: 20px;
+}
+
+.badge-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy-dark);
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
     }
 
-    .process-step-v .step-icon {
-        width: 50px;
-        height: 50px;
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@media (max-width: 900px) {
+    .how-it-works-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .how-it-works-image {
+        order: -1;
+    }
+
+    .how-it-works-image img {
+        height: 350px;
+    }
+}
+
+@media (max-width: 600px) {
+    .accordion-header {
+        padding: 16px 18px;
+    }
+
+    .accordion-title {
+        font-size: 16px;
+    }
+
+    .accordion-icon-emoji {
         font-size: 20px;
     }
 
-    .process-step-v {
-        gap: 16px;
+    .accordion-toggle {
+        width: 28px;
+        height: 28px;
     }
 
-    .process-step-v .step-content h3 {
-        font-size: 18px;
+    .accordion-toggle svg {
+        width: 12px;
+        height: 12px;
     }
 
-    .process-step-v .step-content p {
+    .accordion-content p {
+        padding: 0 18px 16px;
         font-size: 14px;
+    }
+
+    .how-it-works-image img {
+        height: 280px;
+    }
+
+    .floating-badge {
+        top: 20px;
+        right: 20px;
+        padding: 10px 16px;
     }
 }
 

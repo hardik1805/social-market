@@ -115,6 +115,41 @@ faqItems.forEach(item => {
 
 
 // ========================================
+// How It Works Accordion
+// ========================================
+const accordionItems = document.querySelectorAll('.accordion-item');
+
+accordionItems.forEach(item => {
+    const header = item.querySelector('.accordion-header');
+    const content = item.querySelector('.accordion-content');
+
+    header.addEventListener('click', () => {
+        const isOpen = item.classList.contains('active');
+
+        // Close all other items
+        accordionItems.forEach(otherItem => {
+            if (otherItem !== item) {
+                otherItem.classList.remove('active');
+                const otherContent = otherItem.querySelector('.accordion-content');
+                otherContent.style.maxHeight = null;
+                otherItem.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Toggle current item
+        if (!isOpen) {
+            item.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + 'px';
+            header.setAttribute('aria-expanded', 'true');
+        } else {
+            item.classList.remove('active');
+            content.style.maxHeight = null;
+            header.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+
+// ========================================
 // Form Validation
 // ========================================
 function validateEmail(email) {
